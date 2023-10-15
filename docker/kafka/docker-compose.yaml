@@ -1,9 +1,11 @@
 ---
-version: '2'
+version: '3.8'
 services:
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
+    networks:
+      - default
     ports:
       - 28080:8080
     depends_on:
@@ -23,6 +25,8 @@ services:
     image: confluentinc/cp-zookeeper:7.5.0
     hostname: zookeeper
     container_name: zookeeper
+    networks:
+      - default
     ports:
       - "2181:2181"
     environment:
@@ -35,8 +39,11 @@ services:
     container_name: broker
     depends_on:
       - zookeeper
+    networks:
+      - default
     ports:
       - "29092:29092"
+#      - "9094:9092"
       - "9092:9092"
       - "9101:9101"
     environment:
@@ -44,6 +51,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT_EXT:PLAINTEXT
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092,PLAINTEXT_EXT://172.30.1.46:9094
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -55,6 +64,8 @@ services:
     image: confluentinc/cp-schema-registry:7.5.0
     hostname: schema-registry
     container_name: schema-registry
+    networks:
+      - default
     depends_on:
       - broker
     ports:
@@ -157,3 +168,8 @@ services:
 #      KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
 #      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
 #      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+
+networks:
+  default:
+    external: true
+    name: airflow
