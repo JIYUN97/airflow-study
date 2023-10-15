@@ -16,5 +16,5 @@ docker compose --project-name server --file server.yaml up -d
 docker compose --project-name web_server --file web_server.yaml up -d
 docker compose --project-name worker --file worker.yaml up -d
 
-docker compose --project-name worker-ext --file worker2.yaml up -d
+#docker compose --project-name worker-ext --file worker2.yaml up -d
 
