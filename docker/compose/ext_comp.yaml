@@ -6,8 +6,6 @@ services:
     networks:
       - default
       - ext_comp
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
